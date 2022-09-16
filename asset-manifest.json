@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/LanistaHelper/static/css/main.a780effd.css",
-    "main.js": "/LanistaHelper/static/js/main.3de26690.js",
+    "main.css": "/LanistaHelper/static/css/main.5e38bdca.css",
+    "main.js": "/LanistaHelper/static/js/main.47d08aba.js",
     "index.html": "/LanistaHelper/index.html",
-    "main.a780effd.css.map": "/LanistaHelper/static/css/main.a780effd.css.map",
-    "main.3de26690.js.map": "/LanistaHelper/static/js/main.3de26690.js.map"
+    "main.5e38bdca.css.map": "/LanistaHelper/static/css/main.5e38bdca.css.map",
+    "main.47d08aba.js.map": "/LanistaHelper/static/js/main.47d08aba.js.map"
   },
   "entrypoints": [
-    "static/css/main.a780effd.css",
-    "static/js/main.3de26690.js"
+    "static/css/main.5e38bdca.css",
+    "static/js/main.47d08aba.js"
   ]
 }
