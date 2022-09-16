@@ -41,6 +41,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
             <span>
                 <label htmlFor="race_type">Ras:</label>
                 <select
+                    required
                     id="race_type"
                     name="race_type_list"
                     value={selectedGladiator.Race?.swe_name}
@@ -48,7 +49,9 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                         e.preventDefault();
                         handleGladiatorUpdate(races.find(r => r.swe_name === e.target.value), "Race");
                     }}
+                    defaultValue=""
                 >
+                    <option disabled value="">Välj din ras...</option>
                     {races.map((race, index) => {
                         return <option key={index}>{race.swe_name}</option>
                     })};

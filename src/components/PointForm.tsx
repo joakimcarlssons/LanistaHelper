@@ -60,12 +60,12 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
         return +placedPoints + (excludeRaceBonus ? 0 : +raceBonusPoints) + (excludeEquipmentBonus ? 0 : +equipmentBonusPoints) + (excludeDrinkBonus ? 0 : +drinkBonusPoints)
     }
 
-    const totalHealthPoints = calculateTotalPoints(+selectedGladiator.Health, raceBonusPoints.Health, equipmentBonusPoints.Health, drinkBonusPoints.Health)
-    const totalStrengthPoints = calculateTotalPoints(+selectedGladiator.Strength, raceBonusPoints.Strength, equipmentBonusPoints.Strength, drinkBonusPoints.Strength)
-    const totalEndurancePoints = calculateTotalPoints(+selectedGladiator.Endurance, raceBonusPoints.Endurance, equipmentBonusPoints.Endurance, drinkBonusPoints.Endurance)
-    const totalInitiativePoints = calculateTotalPoints(+selectedGladiator.Initiative, raceBonusPoints.Initiative, equipmentBonusPoints.Initiative, drinkBonusPoints.Initiative)
-    const totalDodgePoints = calculateTotalPoints(+selectedGladiator.Dodge, raceBonusPoints.Dodge, equipmentBonusPoints.Dodge, drinkBonusPoints.Dodge)
-    const totalWeaponSkillPoints = calculateTotalPoints(+selectedGladiator.WeaponSkill, raceBonusPoints.WeaponSkill, equipmentBonusPoints.WeaponSkill, drinkBonusPoints.WeaponSkill)
+    const totalHealthPoints = parseFloat(calculateTotalPoints(+selectedGladiator.Health, raceBonusPoints.Health, equipmentBonusPoints.Health, drinkBonusPoints.Health).toFixed(2))
+    const totalStrengthPoints = parseFloat(calculateTotalPoints(+selectedGladiator.Strength, raceBonusPoints.Strength, equipmentBonusPoints.Strength, drinkBonusPoints.Strength).toFixed(2))
+    const totalEndurancePoints = parseFloat(calculateTotalPoints(+selectedGladiator.Endurance, raceBonusPoints.Endurance, equipmentBonusPoints.Endurance, drinkBonusPoints.Endurance).toFixed(2))
+    const totalInitiativePoints = parseFloat(calculateTotalPoints(+selectedGladiator.Initiative, raceBonusPoints.Initiative, equipmentBonusPoints.Initiative, drinkBonusPoints.Initiative).toFixed(2))
+    const totalDodgePoints = parseFloat(calculateTotalPoints(+selectedGladiator.Dodge, raceBonusPoints.Dodge, equipmentBonusPoints.Dodge, drinkBonusPoints.Dodge).toFixed(2))
+    const totalWeaponSkillPoints = parseFloat(calculateTotalPoints(+selectedGladiator.WeaponSkill, raceBonusPoints.WeaponSkill, equipmentBonusPoints.WeaponSkill, drinkBonusPoints.WeaponSkill).toFixed(2))
 
     const handlePointUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
@@ -103,6 +103,9 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
                 case "Initiative":
                 case "Dodge":
                 case "WeaponSkill":
+                case "Drink1":
+                case "Drink2":
+                case "Drink3":
                     break;
                 default:
                     if (selectedGladiator[prop]?.bonuses) {
@@ -173,12 +176,12 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
         });
 
         setEquipmentBonusPoints({
-            Health: getEquipmentBonusValues(BonusType.Health),
-            Strength: getEquipmentBonusValues(BonusType.Strength),
-            Endurance: getEquipmentBonusValues(BonusType.Endurance),
-            Initiative: getEquipmentBonusValues(BonusType.Initative),
-            Dodge: getEquipmentBonusValues(BonusType.Dodge),
-            WeaponSkill: getEquipmentBonusValues(selectedWeaponTypeAsBonus),
+            Health: parseFloat(getEquipmentBonusValues(BonusType.Health).toFixed(2)),
+            Strength: parseFloat(getEquipmentBonusValues(BonusType.Strength).toFixed(2)),
+            Endurance: parseFloat(getEquipmentBonusValues(BonusType.Endurance).toFixed(2)),
+            Initiative: parseFloat(getEquipmentBonusValues(BonusType.Initative).toFixed(2)),
+            Dodge: parseFloat(getEquipmentBonusValues(BonusType.Dodge).toFixed(2)),
+            WeaponSkill: parseFloat(getEquipmentBonusValues(selectedWeaponTypeAsBonus).toFixed(2)),
         });
 
         setDrinkBonuses(selectedGladiator.Drink1 || null, setDrink1BonusPoints);
