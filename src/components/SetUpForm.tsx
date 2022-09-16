@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react"
-import Armor from "../models/Armor"
-import Gladiator from "../models/Gladiator"
-import Race from "../models/Race"
-import Weapon from "../models/Weapon"
-import WeaponType from "../models/WeaponType"
-import InputSearch from "./InputSearch"
+import React, { useEffect, useState } from "react";
+import InputSearch from "./InputSearch";
+import DataHelpers from '../helpers/DataHelpers';
+import { Race, Weapon, WeaponType, Armor, Consumable } from '../data/Dtos/Dtos';
+import Gladiator from '../models/Gladiator';
+import { ArmorType } from "../data/Enums";
 
 interface ISetupForm {
     stage: number
@@ -17,6 +16,26 @@ interface ISetupForm {
     handleGladiatorUpdate: (data: any, propertyName: string) => void;
 }
 
+class FilteredData {
+    constructor(
+        public AttackWeapons: Weapon[] = [],
+        public DefenceWeapons: Weapon[] = [],
+        public RangeWeapons: Weapon[] = [],
+        public HeadArmors: Armor[] = [],
+        public ShoulderArmors: Armor[] = [],
+        public BodyArmors: Armor[] = [],
+        public HandArmors: Armor[] = [],
+        public LegArmors: Armor[] = [],
+        public FeetArmors: Armor[] = [],
+        public Cloaks: Armor[] = [],
+        public Necklaces: Armor[] = [],
+        public Rings: Armor[] = [],
+        public Amulets: Armor[] = [],
+        public Armbands: Armor[] = [],
+        public Ornaments: Armor[] = [],
+    ){}
+}
+
 const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
     const { 
         stage, setStage, races, weaponTypes, weapons,
@@ -24,8 +43,28 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
     } = ISetupForm;
     
     const [isValid, setIsValid] = useState<boolean>(false);
+    const [filteredData, setFilteredData] = useState<FilteredData>(new FilteredData());
 
     useEffect(() => {
+
+        setFilteredData({
+            AttackWeapons: DataHelpers.filterAvailableAttackWeapons(weapons, selectedGladiator),
+            DefenceWeapons: selectedGladiator.AttackWeapon?.is_two_handed ? [] : DataHelpers.filterAvailableDefenceWeapons(weapons, selectedGladiator),
+            RangeWeapons: DataHelpers.filterAvailableRangeWeapons(weapons, selectedGladiator),
+            HeadArmors: DataHelpers.filterAvailableArmor(armors, ArmorType.Head, selectedGladiator),
+            ShoulderArmors: DataHelpers.filterAvailableArmor(armors, ArmorType.Shoulders, selectedGladiator),
+            BodyArmors: DataHelpers.filterAvailableArmor(armors, ArmorType.Body, selectedGladiator),
+            HandArmors: DataHelpers.filterAvailableArmor(armors, ArmorType.Hands, selectedGladiator),
+            LegArmors: DataHelpers.filterAvailableArmor(armors, ArmorType.Legs, selectedGladiator),
+            FeetArmors: DataHelpers.filterAvailableArmor(armors, ArmorType.Feet, selectedGladiator),
+            Cloaks: DataHelpers.filterAvailableArmor(armors, ArmorType.Cloak, selectedGladiator),
+            Necklaces: DataHelpers.filterAvailableArmor(armors, ArmorType.Necklace, selectedGladiator),
+            Rings: DataHelpers.filterAvailableArmor(armors, ArmorType.Ring, selectedGladiator),
+            Amulets: DataHelpers.filterAvailableArmor(armors, ArmorType.Amulet, selectedGladiator),
+            Armbands: DataHelpers.filterAvailableArmor(armors, ArmorType.Armband, selectedGladiator),
+            Ornaments: DataHelpers.filterAvailableArmor(armors, ArmorType.Ornament, selectedGladiator),
+        })
+
         // Validate
         setIsValid(true);
     }, [selectedGladiator])
@@ -44,16 +83,15 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                     required
                     id="race_type"
                     name="race_type_list"
-                    value={selectedGladiator.Race?.swe_name}
+                    value={selectedGladiator.Race?.swe_name || ""}
                     onChange={e => {
                         e.preventDefault();
                         handleGladiatorUpdate(races.find(r => r.swe_name === e.target.value), "Race");
                     }}
-                    defaultValue=""
                 >
                     <option disabled value="">Välj din ras...</option>
                     {races.map((race, index) => {
-                        return <option key={index}>{race.swe_name}</option>
+                        return <option key={index} value={race.swe_name}>{race.swe_name}</option>
                     })};
                 </select>
             </span>
@@ -67,31 +105,33 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="weapon_hand"
                     placeholderText="Sök efter vapen..."
-                    data={weapons}
+                    data={filteredData.AttackWeapons}
                     displayProperty="name"
                     selectedData={selectedGladiator.AttackWeapon}
                     propertyName="AttackWeapon"
                     handleSelectedData={handleGladiatorUpdate}
                 />
             </span>
-            <span>
+            {!selectedGladiator.AttackWeapon?.is_two_handed && <span>
                 <label htmlFor="defence_hand">Sköldhand:</label>
                 <InputSearch 
                     input_id="defence_hand"
                     placeholderText="Sök efter vapen..."
-                    data={weapons}
+                    data={filteredData.DefenceWeapons}
                     displayProperty="name"
                     selectedData={selectedGladiator.DefenceWeapon}
                     propertyName="DefenceWeapon"
                     handleSelectedData={handleGladiatorUpdate}
                 />
-            </span>
+            </span>             
+            }
+
             <span>
                 <label htmlFor="distance_hand">Distansvapen:</label>
                 <InputSearch 
                     input_id="distance_hand"
                     placeholderText="Sök efter vapen..."
-                    data={weapons}
+                    data={filteredData.RangeWeapons}
                     displayProperty="name"
                     selectedData={selectedGladiator.RangeWeapon}
                     propertyName="RangeWeapon"
@@ -105,7 +145,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="armor_head"
                     placeholderText="Sök efter rustning..."
-                    data={armors}
+                    data={filteredData.HeadArmors}
                     displayProperty="name"
                     selectedData={selectedGladiator.HeadArmor}
                     propertyName="HeadArmor"
@@ -117,7 +157,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="armor_shoulder"
                     placeholderText="Sök efter rustning..."
-                    data={armors}
+                    data={filteredData.ShoulderArmors}
                     displayProperty="name"
                     selectedData={selectedGladiator.ShoulderArmor}
                     propertyName="ShoulderArmor"
@@ -129,7 +169,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="armor_body"
                     placeholderText="Sök efter rustning..."
-                    data={armors}
+                    data={filteredData.BodyArmors}
                     displayProperty="name"
                     selectedData={selectedGladiator.BodyArmor}
                     propertyName="BodyArmor"
@@ -141,7 +181,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="armor_hands"
                     placeholderText="Sök efter rustning..."
-                    data={armors}
+                    data={filteredData.HandArmors}
                     displayProperty="name"
                     selectedData={selectedGladiator.HandsArmor}
                     propertyName="HandsArmor"
@@ -153,7 +193,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="armor_legs"
                     placeholderText="Sök efter rustning..."
-                    data={armors}
+                    data={filteredData.LegArmors}
                     displayProperty="name"
                     selectedData={selectedGladiator.LegArmor}
                     propertyName="LegArmor"
@@ -165,7 +205,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="armor_feet"
                     placeholderText="Sök efter rustning..."
-                    data={armors}
+                    data={filteredData.FeetArmors}
                     displayProperty="name"
                     selectedData={selectedGladiator.FeetArmor}
                     propertyName="FeetArmor"
@@ -179,7 +219,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="materials_cloak"
                     placeholderText="Sök efter föremål..."
-                    data={armors}
+                    data={filteredData.Cloaks}
                     displayProperty="name"
                     selectedData={selectedGladiator.Cloak}
                     propertyName="Cloak"
@@ -191,7 +231,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="materials_necklace"
                     placeholderText="Sök efter föremål..."
-                    data={armors}
+                    data={filteredData.Necklaces}
                     displayProperty="name"
                     selectedData={selectedGladiator.Necklace}
                     propertyName="Necklace"
@@ -203,7 +243,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="materials_ring"
                     placeholderText="Sök efter föremål..."
-                    data={armors}
+                    data={filteredData.Rings}
                     displayProperty="name"
                     selectedData={selectedGladiator.Ring}
                     propertyName="Ring"
@@ -215,7 +255,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="materials_amulet"
                     placeholderText="Sök efter föremål..."
-                    data={armors}
+                    data={filteredData.Amulets}
                     displayProperty="name"
                     selectedData={selectedGladiator.Amulet}
                     propertyName="Amulet"
@@ -227,7 +267,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="materials_armband"
                     placeholderText="Sök efter föremål..."
-                    data={armors}
+                    data={filteredData.Armbands}
                     displayProperty="name"
                     selectedData={selectedGladiator.Armband}
                     propertyName="Armband"
@@ -239,7 +279,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="materials_ornament"
                     placeholderText="Sök efter föremål..."
-                    data={armors}
+                    data={filteredData.Ornaments}
                     displayProperty="name"
                     selectedData={selectedGladiator.Ornament}
                     propertyName="Ornament"

@@ -29,7 +29,7 @@ const InputSearch = <T extends object>(
     const filterData = (input: string) => {
         setSearchInput(input);
         if (input) {
-            setFilteredData(data.filter(d => (d[displayProperty] as string).toLowerCase().includes(input.toLowerCase())));
+            setFilteredData(data.filter(d => (d[displayProperty] as string)?.toLowerCase().includes(input.toLowerCase())));
         } else {
             setFilteredData([]);
             selectData(null)

@@ -124,10 +124,15 @@ select#race_type {
     box-shadow: 0px 1px 5px rgba(0,0,0,0.1);
 }
 
+select#race_type option[value=""] {
+  display: none;
+}
+
 select#race_type:invalid {
   opacity: .7;
 }
 
 select#race_type option {
   color: black !important;
+  padding-left: -3rem !important;
 }
