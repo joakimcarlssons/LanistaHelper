@@ -7,7 +7,7 @@ const ErrorMessage = ({ message, display, errorId }) => {
     }, [message])
 
     return <p className={display ? "ErrorMessage" : "hide ErrorMessage"} id={errorId}>
-        {message}.
+        {message}
     </p>
 }
 
