@@ -1,0 +1,61 @@
+.InputSearchBar {
+    max-width: 35rem;
+    background: var(--color-white);
+    width: 95%;
+    border-radius: .5rem;
+    position: relative;
+    box-shadow: 0px 1px 5px 3px rgba(0,0,0,0.02);
+}
+
+.InputSearchBar input {
+    height: 3rem;
+    width: 100%;
+    outline: none;
+    border: none;
+    border-radius: .5rem;
+    padding: 0 3rem 0 2rem;
+    font-size: 1.2rem;
+    box-shadow: 0px 1px 5px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+.InputSearchBar.active {
+    border-radius: .5rem .5rem 0 0;
+}
+
+.InputSearchBar .search-list {
+    padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    max-height: 28rem;
+    overflow-y: auto;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    display: none;
+}
+
+.InputSearchBar.active .search-list {
+    display: block;
+    padding: 0;
+    opacity: 1;
+    pointer-events: auto;
+    width: 100%;
+    position: absolute;
+    background: var(--color-white);
+}
+
+.InputSearchBar.active .search-list ul {
+    display: block;
+}
+
+.InputSearchBar .search-list-data {
+    font-size: 1.2rem;
+    padding: .8rem;
+    cursor: default;
+    border-radius: .3rem;
+}
+
+.InputSearchBar .search-list-data.selected {
+    background: var(--color-lightgray);
+}
