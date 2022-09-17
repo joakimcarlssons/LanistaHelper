@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDroplet, faDumbbell, faGun, faWind, faStarOfLife, faHeartCircleBolt } from '@fortawesome/free-solid-svg-icons';
+
 import Gladiator from "../models/Gladiator";
 import InputSearch from '../components/InputSearch';
-import '../styles/PointForm.css'
-import Consumable from "../models/Consumable";
+import '../styles/PointForm.css';
 import { BonusType } from '../data/Enums';
-import ObjectBonus from '../models/ObjectBonus'
+import { Race, Weapon, WeaponType, Armor, Consumable, Bonus, Requirement } from '../data/Dtos/Dtos';
 
 interface IPointForm {
     setStage: React.Dispatch<React.SetStateAction<number>>
@@ -110,8 +112,8 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
                 default:
                     if (selectedGladiator[prop]?.bonuses) {
                         const selectedBonuses : number[] = 
-                            selectedGladiator[prop]?.bonuses?.filter((bonus : ObjectBonus) => bonus?.bonusable_name === bonusType)
-                                .map((bonus : ObjectBonus) => 
+                            selectedGladiator[prop]?.bonuses?.filter((bonus : Bonus) => bonus?.bonusable_name === bonusType)
+                                .map((bonus : Bonus) => 
                                     bonus.bonus_value_display.slice(-1) === '%'
                                     ? selectedGladiator[getPropertyNameFromBonusName(bonus.bonusable_name)] * (parseInt(bonus.bonus_value_display.slice(0, -1)) / 100)
                                     : parseInt(bonus.bonus_value_display));            
@@ -123,7 +125,7 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
         return value;
     }
 
-    const calculateDrinkBonusValue = (bonus : ObjectBonus, propertyName: string) : number => {
+    const calculateDrinkBonusValue = (bonus : Bonus, propertyName: string) : number => {
         const bonusValue = bonus.bonus_value_display.slice(-1) === '%' ? 
             selectedGladiator[propertyName] * (parseInt(bonus.bonus_value_display.slice(0, -1)) / 100) 
             : parseInt(bonus.bonus_value_display);
@@ -199,12 +201,12 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
         <div className="PointForm_Table">
             <div className="col">
                 <span></span>
-                <h5>Hälsa</h5>
-                <h5>Styrka</h5>
-                <h5>Uthållighet</h5>
-                <h5>Initiativstyrka</h5>
-                <h5>Undvika Anfall</h5>
-                <h5>Vapenfärdighet</h5>
+                <span><FontAwesomeIcon icon={faDroplet} style={{color: "var(--color-gray)"}} /><h5>Hälsa</h5></span>
+                <span><FontAwesomeIcon icon={faDumbbell} style={{color: "var(--color-gray)"}} /><h5>Styrka</h5></span>
+                <span><FontAwesomeIcon icon={faHeartCircleBolt} style={{color: "var(--color-gray)"}} /><h5>Uthållighet</h5></span>
+                <span><FontAwesomeIcon icon={faStarOfLife} style={{color: "var(--color-gray)"}} /><h5>Initiativstyrka</h5></span>
+                <span><FontAwesomeIcon icon={faWind} style={{color: "var(--color-gray)"}} /><h5>Undvika Anfall</h5></span>
+                <span><FontAwesomeIcon icon={faGun} style={{color: "var(--color-gray)"}} /><h5>Vapenfärdighet</h5></span>
             </div> {/** End col 1 */}
 
             <div className="col">
@@ -355,6 +357,7 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
         {/** Add drinks */}
         {/* <h4>Välj dina drycker</h4> */}
         <div className="drinks">
+            <h4>Drycker</h4>
             <span>
                 <p>Dryck 1</p>
                 <InputSearch

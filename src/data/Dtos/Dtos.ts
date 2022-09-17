@@ -57,7 +57,7 @@ export interface Consumable {
     bonuses?: Bonus[]
 }
 
-interface Requirement {
+export interface Requirement {
     id: number,
     requirement_text: string,
     requirement_value: string,
@@ -66,7 +66,7 @@ interface Requirement {
     race_name?: string,
 }
 
-interface Bonus {
+export interface Bonus {
     id: number,
     bonusable_name: string,
     bonus_value_display: string,

@@ -49,8 +49,16 @@
 
 .PointForm .col > span {
     display: flex;
-    justify-content: center;
     align-items: center;
+}
+
+.PointForm .col > span > svg {
+    height: 1.4rem;
+    display: none;
+}
+
+.PointForm .col > span > h5 {
+    margin-left: .5rem;
 }
 
 .PointForm .col input[type="checkbox"] + label  {
@@ -86,6 +94,10 @@
     gap: .3rem;
 }
 
+.drinks > h4 {
+    display: none;
+}
+
 .drinks > span {
     display: flex;
     flex-direction: column;
@@ -98,3 +110,42 @@
     font-weight: bold;
     margin-bottom: 1.2rem;
 }
+
+@media only screen and (max-width: 600px) {
+
+    .PointForm {
+        width: 100%;
+    }
+
+    .PointForm .col > span > svg {
+        display: inline-block;
+        margin-right: 1rem;
+    }
+
+    .PointForm .divider {
+        width: 100%;
+    }
+    
+    h5 {
+        display: none;
+    }
+
+    .drinks {
+        grid-template-columns: 1fr;
+    }
+
+    .drinks > h4 {
+        display: inline-block;
+        align-self: center;
+        justify-self: center;
+        margin-top: 0;
+    }
+
+    .drinks > span {
+        margin: .5rem 0;
+    }
+
+    .drinks > span > p {
+        display: none;
+    }
+} 

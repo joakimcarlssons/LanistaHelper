@@ -2,6 +2,7 @@
   --color-beige: #E4D9C5;
   --color-white: #FFFFFF;
   --color-lightgray: #EDEDED;
+  --color-gray: #6b6767;
   --color-darkred: #8b0000;
   --color-green: #3b774a;
 
@@ -89,9 +90,12 @@ form > section > span > select {
 }
 
 .divider {
-  width: calc(100% - 7rem);
-  margin: 3rem ;
+  width: 80%;
+  margin: 3rem 0;
   border-bottom: 2px solid var(--color-beige);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 button[type="submit"] {
@@ -135,4 +139,21 @@ select#race_type:invalid {
 select#race_type option {
   color: black !important;
   padding-left: -3rem !important;
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 420px) {
+  .FormContainer {
+      min-width: 220px;
+      width: 100vw;
+      border: none;
+  }
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+  /* html, body, * {
+      max-width: 100%;
+      overflow-x: hidden;
+  } */
 }
