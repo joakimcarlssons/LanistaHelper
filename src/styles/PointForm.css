@@ -70,6 +70,10 @@
     cursor: help;
 }
 
+.PointForm .divider {
+    width: 100%;
+}
+
 .PointForm_Table .col > div {
     display: flex;
     justify-content: center;
@@ -120,10 +124,6 @@
     .PointForm .col > span > svg {
         display: inline-block;
         margin-right: 1rem;
-    }
-
-    .PointForm .divider {
-        width: 100%;
     }
     
     h5 {
