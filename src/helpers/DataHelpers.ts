@@ -66,18 +66,17 @@ class DataHelpers {
 
         let availableWeapons : Weapon[] = [];
 
-        // Apply common filters
-        availableWeapons = this.applyCommonFilterRules(weapons, selectedGladiator);
+        // Remove range weapons
+        availableWeapons = availableWeapons.filter(w => !w.is_ranged);
 
         // Remove weapons that can't be wielded in shield arm
         availableWeapons = availableWeapons.filter(w => w.can_dual_wield);
 
-        // Remove range weapons
-        availableWeapons = availableWeapons.filter(w => !w.is_ranged);
+        // But add shields
+        availableWeapons = [...availableWeapons, ...weapons.filter(w => w.is_shield)]
 
-        // Filter shields depending on choice
-        if (selectedGladiator.IsShield) availableWeapons = availableWeapons.filter(w => w.is_shield);
-        else availableWeapons = availableWeapons.filter(w => !w.is_shield);
+        // Then apply common filters
+        availableWeapons = this.applyCommonFilterRules(weapons, selectedGladiator);
 
         return availableWeapons;
     }

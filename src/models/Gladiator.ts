@@ -29,7 +29,7 @@ export default class Gladiator {
         public Initiative: number = 0,
         public Dodge: number = 0,
         public WeaponSkill: number = 0,
-        public IsShield: boolean = false,
+        public ShieldSkill: number = 0,
         public Race? : Race | null | undefined,
         public WeaponType?: WeaponType | null | undefined,
         public AttackWeapon? : Weapon | null | undefined,

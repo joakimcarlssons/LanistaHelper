@@ -38,7 +38,8 @@ export interface Weapon {
 export interface WeaponType {
     name: string,
     type: number,
-    value?: number
+    value?: number,
+    swe_name?: string,
 }
 
 export interface Armor {

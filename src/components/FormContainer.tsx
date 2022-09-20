@@ -13,7 +13,7 @@ const FormContainer = () => {
 
     useEffect(() => {
         if (races.length <= 0) DataService.getRaces().then(res => setRaces(res));
-        //if (weaponTypes.length <= 0) DataService.getWeaponTypes().then(res => setweaponTypes(res));
+        if (weaponTypes.length <= 0) DataService.getWeaponTypes().then(res => setweaponTypes(res));
         if (weapons.length <= 0) DataService.getAllWeapons().then(res => setWeapons(res));
         if (armors.length <= 0) DataService.getAllArmors().then(res => setArmors(res));
         if (consumables.length <= 0) DataService.getAllConsumables().then(res => setConsumables(res));
