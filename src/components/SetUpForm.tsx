@@ -80,6 +80,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
             <span>
                 <label htmlFor="race_type">Ras:</label>
                 <select
+                    className="initSelect"
                     required
                     id="race_type"
                     name="race_type_list"
@@ -95,6 +96,26 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                     })};
                 </select>
             </span>
+
+            <span>
+                <label htmlFor="weapon_type">Vapentyp:</label>
+                <select
+                    className="initSelect"
+                    required
+                    id="weapon_type"
+                    name="weapon_type_list"
+                    value={selectedGladiator.WeaponType?.swe_name || ""}
+                    onChange={e => {
+                        e.preventDefault();
+                        handleGladiatorUpdate(weaponTypes.find(wt => wt.swe_name === e.target.value), "WeaponType");
+                    }}
+                >
+                    <option disabled value="">Välj vapentyp...</option>
+                    {weaponTypes.map((wt, index) => {
+                        return wt.name === "SHIELD" ? null : <option key={index} value={wt.swe_name}>{wt.swe_name}</option>
+                    })};
+                </select>
+            </span>
         </section>
     
         <span className="divider" />
@@ -105,7 +126,7 @@ const SetupForm: React.FC<ISetupForm> = (ISetupForm) => {
                 <InputSearch 
                     input_id="weapon_hand"
                     placeholderText="Sök efter vapen..."
-                    data={filteredData.AttackWeapons}
+                    data={filteredData.AttackWeapons.filter(w => w.type === selectedGladiator.WeaponType?.type)}
                     displayProperty="name"
                     selectedData={selectedGladiator.AttackWeapon}
                     propertyName="AttackWeapon"

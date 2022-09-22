@@ -18,16 +18,12 @@ class DataService {
         return races;
     }
 
-    // async getWeaponTypes() : Promise<WeaponType[]> {
-    //     const response = (await axios.get<DT.IRaceData>('/races')).data.weapon_skills;
-    //     let weaponTypes : WeaponType[] = [];
-
-    //     response.forEach(ws => {
-    //         weaponTypes = [...weaponTypes, new WeaponType(ws.name, ws.type)]
-    //     });
-
-    //     return weaponTypes;
-    // }
+    async getWeaponTypes() : Promise<WeaponType[]> {
+        const response = (await axios.get<{ weapon_skills: Generic[], stats: Generic[], races: Race[] }>('/races')).data?.weapon_skills;
+        return response.map(ws => {
+            return ({...ws, swe_name: DataHelpers.getWeaponTypeSweName(ws.name)})
+        });
+    }
 
     async getAllWeapons() : Promise<Weapon[]> {
         const allWeapons = Object.entries<string>((await axios.get('/items/weapons/all')).data);

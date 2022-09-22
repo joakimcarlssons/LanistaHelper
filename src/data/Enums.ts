@@ -1,3 +1,21 @@
+export enum WeaponTypes {
+    Axe = 0,
+    Sword = 1,
+    Mace = 2,
+    Stave = 4,
+    Shield = 6,
+    Spear = 7,
+    Chain = 8,
+}
+
+export enum StatType {
+    Health = 0,
+    Strength = 1,
+    Endurance = 3,
+    Initiative = 4,
+    Dodge = 7,
+}
+
 export enum ArmorType {
     Head = 0,
     Shoulders = 1,

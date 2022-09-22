@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDroplet, faDumbbell, faGun, faWind, faStarOfLife, faHeartCircleBolt } from '@fortawesome/free-solid-svg-icons';
+import { faDroplet, faDumbbell, faGun, faWind, faStarOfLife, faHeartCircleBolt, faShield } from '@fortawesome/free-solid-svg-icons';
 
 import Gladiator from "../models/Gladiator";
 import InputSearch from '../components/InputSearch';
 import '../styles/PointForm.css';
-import { BonusType } from '../data/Enums';
+import { BonusType, StatType, WeaponTypes } from '../data/Enums';
 import { Race, Weapon, WeaponType, Armor, Consumable, Bonus, Requirement } from '../data/Dtos/Dtos';
 
 interface IPointForm {
@@ -23,6 +23,7 @@ class BonusPoint {
         public Initiative: number = 0,
         public Dodge: number = 0,
         public WeaponSkill: number = 0,
+        public ShieldSkill: number = 0,
     ){}
 }
 
@@ -34,7 +35,7 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
     const [excludeDrinkBonus, setExcludeDrinkBonus] = useState<boolean>(false);
 
     const maxPoints = 150 + (24 * 20);
-    const totalSetPoints = +selectedGladiator.Health + +selectedGladiator.Strength + +selectedGladiator.Endurance + +selectedGladiator.Initiative + +selectedGladiator.Dodge + +selectedGladiator.WeaponSkill;
+    const totalSetPoints = +selectedGladiator.Health + +selectedGladiator.Strength + +selectedGladiator.Endurance + +selectedGladiator.Initiative + +selectedGladiator.Dodge + +selectedGladiator.WeaponSkill + (selectedGladiator.DefenceWeapon?.is_shield ? +selectedGladiator.ShieldSkill : 0);
     
     const weaponType = selectedGladiator.AttackWeapon?.type_name?.toUpperCase();
     const selectedWeaponTypeAsBonus = weaponType === "AXE" ? BonusType.Axe
@@ -68,13 +69,13 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
     const totalInitiativePoints = parseFloat(calculateTotalPoints(+selectedGladiator.Initiative, raceBonusPoints.Initiative, equipmentBonusPoints.Initiative, drinkBonusPoints.Initiative).toFixed(2))
     const totalDodgePoints = parseFloat(calculateTotalPoints(+selectedGladiator.Dodge, raceBonusPoints.Dodge, equipmentBonusPoints.Dodge, drinkBonusPoints.Dodge).toFixed(2))
     const totalWeaponSkillPoints = parseFloat(calculateTotalPoints(+selectedGladiator.WeaponSkill, raceBonusPoints.WeaponSkill, equipmentBonusPoints.WeaponSkill, drinkBonusPoints.WeaponSkill).toFixed(2))
+    const totalShieldSkillPoints = parseFloat(calculateTotalPoints(+selectedGladiator.ShieldSkill, raceBonusPoints.ShieldSkill, equipmentBonusPoints.ShieldSkill, drinkBonusPoints.ShieldSkill).toFixed(2))
 
     const handlePointUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         handleGladiatorUpdate(e.target.value, e.target.name);
     }
 
-    const calculatePercentageValue = (value: number) => Math.floor(parseFloat((value - 1).toFixed(2)) * 100);
     const getPropertyNameFromBonusName = (bonusName: string) : string => {
         switch (bonusName) {
             case "Bashälsa": return "Health";
@@ -162,19 +163,14 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
     }
 
     useEffect(() => {
-
-        const weaponType = selectedGladiator.AttackWeapon?.type_name?.toUpperCase();
-
-    }, []);
-
-    useEffect(() => {
         setRaceBonusPoints({
-            Health: parseFloat(((selectedGladiator.Health * (selectedGladiator.Race?.bonuses.stats.find(s => s.name === 'STAMINA')?.value || 0)) - selectedGladiator.Health).toFixed(2)),
-            Strength: parseFloat(((selectedGladiator.Strength * (selectedGladiator.Race?.bonuses.stats.find(s => s.name === 'STRENGTH')?.value || 0)) - selectedGladiator.Strength).toFixed(2)),
-            Endurance: parseFloat(((selectedGladiator.Endurance * (selectedGladiator.Race?.bonuses.stats.find(s => s.name === 'ENDURANCE')?.value || 0)) - selectedGladiator.Endurance).toFixed(2)),
-            Initiative: parseFloat(((selectedGladiator.Initiative * (selectedGladiator.Race?.bonuses.stats.find(s => s.name === 'INITIATIVE')?.value || 0)) - selectedGladiator.Initiative).toFixed(2)),
-            Dodge: parseFloat(((selectedGladiator.Dodge * (selectedGladiator.Race?.bonuses.stats.find(s => s.name === 'DODGE')?.value || 0)) - selectedGladiator.Dodge).toFixed(2)),
-            WeaponSkill: parseFloat(((selectedGladiator.WeaponSkill * (selectedGladiator.Race?.bonuses.weapon_skills.find(ws => ws.name === weaponType)?.value || 0)) - selectedGladiator.WeaponSkill).toFixed(2)),
+            Health: parseFloat(((selectedGladiator.Health * (selectedGladiator.Race?.bonuses.stats.find(s => s.type === StatType.Health)?.value || 0)) - selectedGladiator.Health).toFixed(2)),
+            Strength: parseFloat(((selectedGladiator.Strength * (selectedGladiator.Race?.bonuses.stats.find(s => s.type === StatType.Strength)?.value || 0)) - selectedGladiator.Strength).toFixed(2)),
+            Endurance: parseFloat(((selectedGladiator.Endurance * (selectedGladiator.Race?.bonuses.stats.find(s => s.type === StatType.Endurance)?.value || 0)) - selectedGladiator.Endurance).toFixed(2)),
+            Initiative: parseFloat(((selectedGladiator.Initiative * (selectedGladiator.Race?.bonuses.stats.find(s => s.type === StatType.Initiative)?.value || 0)) - selectedGladiator.Initiative).toFixed(2)),
+            Dodge: parseFloat(((selectedGladiator.Dodge * (selectedGladiator.Race?.bonuses.stats.find(s => s.type === StatType.Dodge)?.value || 0)) - selectedGladiator.Dodge).toFixed(2)),
+            WeaponSkill: parseFloat(((selectedGladiator.WeaponSkill * (selectedGladiator.Race?.bonuses.weapon_skills.find(ws => ws.type === selectedGladiator.WeaponType?.type)?.value || 0)) - selectedGladiator.WeaponSkill).toFixed(2)),
+            ShieldSkill: parseFloat(((selectedGladiator.ShieldSkill * (selectedGladiator.Race?.bonuses.weapon_skills.find(ws => ws.type === WeaponTypes.Shield)?.value || 0)) - selectedGladiator.ShieldSkill)?.toFixed(2)),
         });
 
         setEquipmentBonusPoints({
@@ -184,6 +180,7 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
             Initiative: parseFloat(getEquipmentBonusValues(BonusType.Initative).toFixed(2)),
             Dodge: parseFloat(getEquipmentBonusValues(BonusType.Dodge).toFixed(2)),
             WeaponSkill: parseFloat(getEquipmentBonusValues(selectedWeaponTypeAsBonus).toFixed(2)),
+            ShieldSkill: parseFloat(getEquipmentBonusValues(BonusType.Shield).toFixed(2)),
         });
 
         setDrinkBonuses(selectedGladiator.Drink1 || null, setDrink1BonusPoints);
@@ -207,6 +204,7 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
                 <span><FontAwesomeIcon icon={faStarOfLife} style={{color: "var(--color-gray)"}} /><h5>Initiativstyrka</h5></span>
                 <span><FontAwesomeIcon icon={faWind} style={{color: "var(--color-gray)"}} /><h5>Undvika Anfall</h5></span>
                 <span><FontAwesomeIcon icon={faGun} style={{color: "var(--color-gray)"}} /><h5>Vapenfärdighet</h5></span>
+                {selectedGladiator.DefenceWeapon?.is_shield && <span><FontAwesomeIcon icon={faShield} style={{color: "var(--color-gray)"}} /><h5>Sköld</h5></span>}
             </div> {/** End col 1 */}
 
             <div className="col">
@@ -247,6 +245,13 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
                     value={selectedGladiator.WeaponSkill}
                     onChange={e => handlePointUpdate(e)}
                 />
+                {selectedGladiator.DefenceWeapon?.is_shield && <input
+                    type="number" 
+                    name="ShieldSkill" 
+                    value={selectedGladiator.ShieldSkill}
+                    onChange={e => handlePointUpdate(e)}
+                />
+                }
             </div> {/** End col 2 */}
 
             <div className="col">
@@ -279,6 +284,10 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
                 <div className={excludeRaceBonus ? 'line-through' : ''}>
                     <span style={{color: raceBonusPoints.WeaponSkill === 0 ? 'var(--color-black)' : raceBonusPoints.WeaponSkill < 0 ? 'var(--color-darkred)' : 'var(--color-green)'}}>{raceBonusPoints.WeaponSkill}</span>
                 </div>
+                {selectedGladiator.DefenceWeapon?.is_shield && <div className={excludeRaceBonus ? 'line-through' : ''}>
+                <span style={{color: raceBonusPoints.ShieldSkill === 0 ? 'var(--color-black)' : raceBonusPoints.ShieldSkill < 0 ? 'var(--color-darkred)' : 'var(--color-green)'}}>{raceBonusPoints.ShieldSkill}</span>
+                </div>
+                }
             </div> {/** End col 3 */}
             
             <div className="col">
@@ -309,6 +318,10 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
                 <div className={excludeEquipmentBonus ? 'line-through' : ''}>
                     <span style={{color: equipmentBonusPoints.WeaponSkill === 0 ? 'var(--color-black)' : equipmentBonusPoints.WeaponSkill < 0 ? 'var(--color-darkred)' : 'var(--color-green)'}}>{equipmentBonusPoints.WeaponSkill}</span>
                 </div>
+                {selectedGladiator.DefenceWeapon?.is_shield && <div className={excludeEquipmentBonus ? 'line-through' : ''}>
+                <span style={{color: equipmentBonusPoints.ShieldSkill === 0 ? 'var(--color-black)' : equipmentBonusPoints.ShieldSkill < 0 ? 'var(--color-darkred)' : 'var(--color-green)'}}>{equipmentBonusPoints.ShieldSkill}</span>
+                </div>
+                }
             </div> {/** End col 4 */}
 
             <div className="col">
@@ -339,6 +352,10 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
                 <div className={excludeDrinkBonus ? 'line-through' : ''}>
                     <span style={{color: drinkBonusPoints.WeaponSkill === 0 ? 'var(--color-black)' : drinkBonusPoints.WeaponSkill < 0 ? 'var(--color-darkred)' : 'var(--color-green)'}}>{drinkBonusPoints.WeaponSkill}</span>
                 </div>
+                {selectedGladiator.DefenceWeapon?.is_shield && <div className={excludeDrinkBonus ? 'line-through' : ''}>
+                    <span style={{color: drinkBonusPoints.ShieldSkill === 0 ? 'var(--color-black)' : drinkBonusPoints.ShieldSkill < 0 ? 'var(--color-darkred)' : 'var(--color-green)'}}>{drinkBonusPoints.ShieldSkill}</span>
+                </div>
+                }
             </div> {/** End col 5 */}
 
             <div className="col">
@@ -349,6 +366,7 @@ const PointForm: React.FC<IPointForm> = (IPointForm) => {
                 <div className="equal_sign">=<span className="totalNumber">{totalInitiativePoints}</span></div>
                 <div className="equal_sign">=<span className="totalNumber">{totalDodgePoints}</span></div>
                 <div className="equal_sign">=<span className="totalNumber">{totalWeaponSkillPoints}</span></div>
+                {selectedGladiator.DefenceWeapon?.is_shield && <div className="equal_sign">=<span className="totalNumber">{totalShieldSkillPoints}</span></div>}
             </div> {/** End col 6 */}
         </div>
 

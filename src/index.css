@@ -117,7 +117,7 @@ button[type="submit"] {
   color: var(--color-darkred);
 }
 
-select#race_type {
+select.initSelect {
     height: 3rem;
     width: 95%;
     outline: none;
@@ -128,15 +128,15 @@ select#race_type {
     box-shadow: 0px 1px 5px rgba(0,0,0,0.1);
 }
 
-select#race_type option[value=""] {
+select.initSelect option[value=""] {
   display: none;
 }
 
-select#race_type:invalid {
+select.initSelect:invalid {
   opacity: .7;
 }
 
-select#race_type option {
+select.initSelect option {
   color: black !important;
   padding-left: -3rem !important;
 }
@@ -152,8 +152,4 @@ select#race_type option {
 
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
-  /* html, body, * {
-      max-width: 100%;
-      overflow-x: hidden;
-  } */
 }
